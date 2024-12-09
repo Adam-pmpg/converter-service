@@ -1,31 +1,31 @@
 require('dotenv').config();
+const express = require('express');
 
-const Hapi = require('@hapi/hapi');
+// Importowanie tras
+const videoConverterRoute = require('./routes/videoConverter');
+const aboutRoute = require('./routes/about');
 
-const init = async () => {
-    const server = Hapi.server({
-        port: process.env.CONVERTER_SERVICE_HOST_PORT || 3005,
-        host: process.env.CONVERTER_SERVICE_HOST || 'localhost'
-    });
+const app = express();
+const port = process.env.CONVERTER_SERVICE_HOST_PORT || 3005;
+const host = process.env.CONVERTER_SERVICE_HOST || 'localhost';
 
-    // Importowanie tras
-    const videoConverterRoute = require('./routes/videoConverter');
-    const aboutRoute = require('./routes/about');
+// Middleware do parsowania JSON (jeśli jest potrzebne)
+app.use(express.json());
 
-    // Rejestrowanie tras
-    // server.route(videoConverterRoute);
-    // server.route(aboutRoute);
+// Rejestrowanie tras
+app.use('/video', videoConverterRoute);
+app.use('/about', aboutRoute);
+app.get('/', (req, res) => {
+    res.status(200).send();
+});
 
-    server.route([...videoConverterRoute, aboutRoute]);
-
-
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
-};
-
+// Obsługa nieobsłużonych błędów
 process.on('unhandledRejection', (err) => {
-    console.log(err);
+    console.error('Unhandled Rejection:', err);
     process.exit(1);
 });
 
-init();
+// Startowanie serwera
+app.listen(port, () => {
+    console.log(`Server running on http://${host}:${port}`);
+});
