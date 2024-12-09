@@ -18,6 +18,9 @@ RUN npm install -g multer
 # Kopiujemy pliki projektu do kontenera
 COPY . .
 
+# Zmieniamy właściciela plików
+# RUN chown -R node:node /app
+
 # Instalujemy zależności projektu (bez nodemon)
 RUN npm install
 
