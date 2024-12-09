@@ -9,12 +9,15 @@ const init = async () => {
     });
 
     // Importowanie tras
-    const videoRoutes = require('./routes/videoConverter');
-    const aboutRoutes = require('./routes/about');
+    const videoConverterRoute = require('./routes/videoConverter');
+    const aboutRoute = require('./routes/about');
 
     // Rejestrowanie tras
-    server.route(videoRoutes);
-    server.route(aboutRoutes);
+    // server.route(videoConverterRoute);
+    // server.route(aboutRoute);
+
+    server.route([...videoConverterRoute, aboutRoute]);
+
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
