@@ -9,7 +9,7 @@ const init = async () => {
     });
 
     // Importowanie tras
-    const videoRoutes = require('./routes/video');
+    const videoRoutes = require('./routes/videoConverter');
     const aboutRoutes = require('./routes/about');
 
     // Rejestrowanie tras
