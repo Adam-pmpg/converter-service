@@ -4,6 +4,9 @@ FROM node:18
 # Ustawiamy katalog roboczy w kontenerze na /app
 WORKDIR /app
 
+# Instalacja zależności systemowych (w tym FFmpeg)
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Kopiujemy tylko pliki package.json oraz package-lock.json
 COPY package*.json ./
 
