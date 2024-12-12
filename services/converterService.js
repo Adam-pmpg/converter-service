@@ -20,7 +20,7 @@ const convertToHLS = (inputFile, outputDir, options = {}) => {
 
         // Jeśli nie ma ustawionych rozdzielczości, przetwarzamy w natywnej rozdzielczości
         if (!options.resolutions || options.resolutions.length === 0) {
-            let options.resolutions = [
+            options.resolutions = [
                 { bitrate: '500k', resolution: '640x360', segmentFilename: '360p_%03d.ts', playlist: '360p.m3u8' },
                 { bitrate: '1000k', resolution: '1280x720', segmentFilename: '720p_%03d.ts', playlist: '720p.m3u8' },
             ];
