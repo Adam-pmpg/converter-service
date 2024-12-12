@@ -10,19 +10,22 @@ const convertToHLS = (inputFile, outputDir, options = {}) => {
         inputFile,
         resolutions: options.resolutions,
         outputDir,
-    })
+    });
+    const { dirname } = options;
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(inputFile)) {
             return reject(new Error('Brak pliku wejściowego'));
         }
 
-        const ffmpegCommand = ffmpeg(inputFile).output(path.join(outputDir, 'oryginal_playlist-output.m3u8'));
+        const ffmpegCommand = ffmpeg(inputFile);
+        // Czy taki default jest mi potrzebny ?
+        //const ffmpegCommand = ffmpeg(inputFile).output(path.join(outputDir, 'oryginal_playlist-output.m3u8'));
 
         // Jeśli nie ma ustawionych rozdzielczości, przetwarzamy w natywnej rozdzielczości
         if (!options.resolutions || options.resolutions.length === 0) {
             options.resolutions = [
-                { bitrate: '500k', resolution: '640x360', segmentFilename: '360p_%03d.ts', playlist: '360p.m3u8' },
-                { bitrate: '1000k', resolution: '1280x720', segmentFilename: '720p_%03d.ts', playlist: '720p.m3u8' },
+                { bitrate: '500k', resolution: '640x360', segmentFilename: `${dirname}_360p_%03d.ts`, playlist: `${dirname}_360p.m3u8` },
+                { bitrate: '1000k', resolution: '1280x720', segmentFilename: `${dirname}_720p_%03d.ts`, playlist: `${dirname}_720p.m3u8` },
             ];
         }
 
@@ -40,7 +43,7 @@ const convertToHLS = (inputFile, outputDir, options = {}) => {
 
         ffmpegCommand
             .on('end', () => {
-                console.log('Conversion finished');
+                console.log('Conversion to HLS, finished');
                 resolve();
             })
             .on('error', (err) => {

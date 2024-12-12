@@ -19,6 +19,7 @@ router.post('/convert/multi-resolutions/:dirname', (req, res) => {
 
     // Ustawienia domyślne dla opcji HLS
     const options = {
+        dirname,
         hls_time: parseInt(hls_time) || 10, // Długość segmentu w sekundach, domyślnie 10
         hls_list_size: parseInt(hls_list_size) || 0,
         resolutions: resolutions ? resolutions : [],// Brak limitu segmentów w liście, domyślnie 0
