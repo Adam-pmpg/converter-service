@@ -21,7 +21,7 @@ router.post('/convert/multi-resolutions/:dirname', (req, res) => {
     const options = {
         hls_time: parseInt(hls_time) || 10, // Długość segmentu w sekundach, domyślnie 10
         hls_list_size: parseInt(hls_list_size) || 0,
-        resolutions,// Brak limitu segmentów w liście, domyślnie 0
+        resolutions: resolutions ? resolutions : [],// Brak limitu segmentów w liście, domyślnie 0
     };
 
     const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`); // Ścieżka do pliku MP4
