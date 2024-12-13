@@ -4,6 +4,9 @@ const fs = require('fs');
 
 // Funkcja do konwersji MP4 na HLS
 const convertToHLS = (inputFile, outputDir, options = {}) => {
+    console.log({
+        inputFile,
+    })
     const { dirname } = options;
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(inputFile)) {
