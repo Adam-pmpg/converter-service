@@ -4,13 +4,6 @@ const fs = require('fs');
 
 // Funkcja do konwersji MP4 na HLS
 const convertToHLS = (inputFile, outputDir, options = {}) => {
-    console.log({
-        a13: '**********',
-        options,
-        inputFile,
-        resolutions: options.resolutions,
-        outputDir,
-    });
     const { dirname } = options;
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(inputFile)) {
@@ -19,7 +12,7 @@ const convertToHLS = (inputFile, outputDir, options = {}) => {
 
         const ffmpegCommand = ffmpeg(inputFile);
         // Czy taki default jest mi potrzebny ?
-        //const ffmpegCommand = ffmpeg(inputFile).output(path.join(outputDir, 'oryginal_playlist-output.m3u8'));
+        // const ffmpegCommand = ffmpeg(inputFile).output(path.join(outputDir, 'oryginal_playlist-output.m3u8'));
 
         // Jeśli nie ma ustawionych rozdzielczości, przetwarzamy w natywnej rozdzielczości
         if (!options.resolutions || options.resolutions.length === 0) {
@@ -36,7 +29,8 @@ const convertToHLS = (inputFile, outputDir, options = {}) => {
                     '-f hls', // Format HLS
                     `-b:v ${res.bitrate}`, // Bitrate
                     `-s ${res.resolution}`, // Rozdzielczość
-                    `-hls_time ${options.hls_time || 10}`, // Czas segmentu
+                    `-hls_time ${options.hls_time || 8}`, // Czas segmentu
+                    `-hls_list_size ${options.hls_list_size || 0}`,
                     `-hls_segment_filename ${path.join(outputDir, res.segmentFilename)}`,
                 ]);
         });
