@@ -6,9 +6,6 @@ const { getVideoDuration } = require('./ffmpegUtils');
 
 // Funkcja do konwersji MP4 na HLS
 const convertToHLS = async (inputFile, outputDir, options = {}) => {
-    console.log({
-        inputFile,
-    })
     const { dirname } = options;
     if (!fs.existsSync(inputFile)) {
         return reject(new Error('Brak pliku wejściowego'));
