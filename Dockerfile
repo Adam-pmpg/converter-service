@@ -7,19 +7,20 @@ WORKDIR /app
 # Instalacja zależności systemowych (w tym FFmpeg)
 RUN apt-get update && apt-get install -y ffmpeg
 
+# Instalujemy nodemon globalnie
+RUN npm install -g nodemon multer
+
 # Kopiujemy tylko pliki package.json oraz package-lock.json
 COPY package*.json ./
 
-# Instalujemy nodemon globalnie
-RUN npm install -g nodemon
-
-RUN npm install -g multer
 
 # Kopiujemy pliki projektu do kontenera
 COPY . .
 
-# Zmieniamy właściciela plików
-# RUN chown -R node:node /app
+# Zmieniamy właściciela plików, aby były dostępne dla użytkownika "node"
+RUN chown -R node:node /app
+
+USER node
 
 # Instalujemy zależności projektu (bez nodemon)
 RUN npm install
