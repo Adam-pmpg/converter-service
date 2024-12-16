@@ -10,17 +10,14 @@ const router = express.Router();
 router.post('/generate-thumbnails/:dirname', async (req, res) => {
     try {
         const { dirname } = req.params; // Pobieranie nazwy folderu z URL
-        const { frame, second } = req.body;
+        const { second, size } = req.body;
         const setup = {
-            frame,
-            second
+            second,
+            size
         };
         const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`);
         const outputDir = path.join(__dirname, '../output-hls', dirname );
 
-        /*if (!frame && !second) {
-            return res.status(400).json({error: 'Nie podałeś, którą stopklatkę!'});
-        }*/
         if (!fs.existsSync(inputFile)) {
             return res.status(404).json({ error: 'Brak folderu wejściowego #102' });
         }
@@ -37,8 +34,7 @@ router.post('/generate-thumbnails/:dirname', async (req, res) => {
         return res.status(200).json({
             message: 'Stopklatki zostały wygenerowane',
             data: {
-                second,
-                frame,
+                second
             }
 
         });
