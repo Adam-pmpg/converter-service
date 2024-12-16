@@ -13,7 +13,10 @@ const generateThumbnails = (inputFile, outputDir, setup) => {
             return reject(new Error('Brak informacji o czasie trwania video'));
         }
         let timePoints = [];
-        if (!second) {
+        if (second && second > duration) {
+            console.warn(`Podany czas przekracza długość wideo. Ustawiamy czas na ${duration} sekund.`);
+            timePoints = [duration];
+        } else if (!second) {
             timePoints = [
                 duration * 0.1,
                 duration * 0.15,
