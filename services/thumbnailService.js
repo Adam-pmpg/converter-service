@@ -3,10 +3,14 @@ const path = require('path');
 const fs = require('fs');
 
 // Funkcja do generowania klatek
-const generateThumbnails = (inputFile, outputDir, duration) => {
+const generateThumbnails = (inputFile, outputDir, setup) => {
+    const { duration } = setup;
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(inputFile)) {
             return reject(new Error('Brak pliku wejściowego'));
+        }
+        if (!duration) {
+            return reject(new Error('Brak informacji o czasie trwania video'));
         }
 
         const timePoints = [
