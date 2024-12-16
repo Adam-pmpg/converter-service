@@ -1,7 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 
+const authenticateJWT = require('./middleware/authenticateJWT');
+
 // Importowanie tras
+const authRoutes = require('./routes/authRoutes');
 const videoConverterRoute = require('./routes/videoConverter');
 const aboutRoute = require('./routes/about');
 
@@ -13,8 +16,10 @@ const host = process.env.CONVERTER_SERVICE_HOST || 'localhost';
 app.use(express.json());
 
 // Rejestrowanie tras
-app.use('/video', videoConverterRoute);
+
+app.use('/video', authenticateJWT, videoConverterRoute);
 app.use('/about', aboutRoute);
+app.use('/auth', authRoutes);
 app.get('/', (req, res) => {
     res.status(200).send();
 });
