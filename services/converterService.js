@@ -1,18 +1,31 @@
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
+const { generateThumbnails } = require('./thumbnailService');
+const { getVideoDuration } = require('./ffmpegUtils');
 
 // Funkcja do konwersji MP4 na HLS
-const convertToHLS = (inputFile, outputDir, options = {}) => {
-    console.log({
-        inputFile,
-    })
+const convertToHLS = async (inputFile, outputDir, options = {}) => {
     const { dirname } = options;
+    if (!fs.existsSync(inputFile)) {
+        return reject(new Error('Brak pliku wejściowego'));
+    }
+    let duration;
+    try {
+        duration = await getVideoDuration(inputFile);
+    } catch (err) {
+        return reject(new Error('Nie udało się uzyskać czasu trwania wideo: ' + err.message));
+    }
+    // Wywołaj generowanie klatek
+    try {
+        console.log('Generowanie klatek...');
+        await generateThumbnails(inputFile, outputDir, duration);
+        console.log('Klatki zostały wygenerowane.');
+    } catch (err) {
+        console.error('Błąd podczas generowania klatek:', err);
+    }
+    // Konwersja na HLS
     return new Promise((resolve, reject) => {
-        if (!fs.existsSync(inputFile)) {
-            return reject(new Error('Brak pliku wejściowego'));
-        }
-
         const ffmpegCommand = ffmpeg(inputFile);
         // Czy taki default jest mi potrzebny ?
         // const ffmpegCommand = ffmpeg(inputFile).output(path.join(outputDir, 'oryginal_playlist-output.m3u8'));
