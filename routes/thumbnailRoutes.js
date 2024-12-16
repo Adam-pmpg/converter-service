@@ -18,9 +18,9 @@ router.post('/generate-thumbnails/:dirname', async (req, res) => {
         const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`);
         const outputDir = path.join(__dirname, '../output-hls', dirname );
 
-        if (!frame && !second) {
+        /*if (!frame && !second) {
             return res.status(400).json({error: 'Nie podałeś, którą stopklatkę!'});
-        }
+        }*/
         if (!fs.existsSync(inputFile)) {
             return res.status(404).json({ error: 'Brak folderu wejściowego #102' });
         }
