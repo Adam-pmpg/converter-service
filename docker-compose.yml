@@ -5,13 +5,13 @@ services:
     container_name: converter-service
     env_file:
       - .env
-    environment:
-      - CONVERTER_SERVICE_HOST_PORT:${CONVERTER_SERVICE_HOST_PORT}
-      - RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
-    ports:
-      - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
     depends_on:
       - rabbitmq-video-service
+    environment:
+      - CONVERTER_SERVICE_HOST_PORT:${CONVERTER_SERVICE_HOST_PORT}
+      - RABBITMQ_URL:amqp://guest:guest@rabbitmq:5672
+    ports:
+      - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
     volumes:
       - .:/app
       - /app/node_modules
