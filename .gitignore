@@ -1,0 +1,26 @@
+node_modules/
+chunks/
+output/
+.idea/
+.vscode/
+.idea/
+.github/
+.env
+
+# Pliki i foldery z danymi Docker (np. woluminy, bazy danych itp.)
+docker-data/
+docker-volume/
+db-data/
+
+# Lokalne pliki konfiguracyjne Docker Compose
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Pliki cache i build Dockera
+**/Dockerfile.*
+*.dockerfile.*
+*.log
+
+# Ignoruj obrazy i cache builda
+.docker/
+.dockerignore
