@@ -7,7 +7,7 @@ const { convertToHLS } = require('../services/converterService');
 const router = express.Router();
 
 router.post('/convert/:dirname', (req, res) => {
-    const { dirname } = req.params; // Pobranie nazwy pliku z URL
+    const { dirname } = req.params; // Pobieranie nazwy folderu z URL
     const { hls_time, hls_list_size , resolutions } = req.body;
 
     // Sprawdzenie, czy nazwa pliku jest prawidłowa

@@ -6,6 +6,7 @@ const authenticateJWT = require('./middleware/authenticateJWT');
 // Importowanie tras
 const authRoutes = require('./routes/authRoutes');
 const videoConverterRoute = require('./routes/videoConverter');
+const thumbnailRoutes = require('./routes/thumbnailRoutes');
 const aboutRoute = require('./routes/about');
 
 const app = express();
@@ -17,9 +18,11 @@ app.use(express.json());
 
 // Rejestrowanie tras
 
-app.use('/video', authenticateJWT, videoConverterRoute);
-app.use('/about', aboutRoute);
 app.use('/auth', authRoutes);
+app.use('/about', aboutRoute);
+app.use('/thumbnail', authenticateJWT, thumbnailRoutes);
+app.use('/video', authenticateJWT, videoConverterRoute);
+
 app.get('/', (req, res) => {
     res.status(200).send();
 });

@@ -1,0 +1,19 @@
+services:
+  converter-service:
+    user: node
+    build: .
+    container_name: converter-service
+    env_file:
+      - .env
+    environment:
+      - CONVERTER_SERVICE_HOST_PORT=${CONVERTER_SERVICE_HOST_PORT}
+    ports:
+      - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./output:/app/output
+      - ./output-hls:/app/output-hls
+volumes:
+  output:
+  output-hls:
