@@ -5,8 +5,11 @@ services:
     container_name: converter-service
     env_file:
       - .env
+    depends_on:
+      - rabbitmq-video-service
     environment:
-      - CONVERTER_SERVICE_HOST_PORT=${CONVERTER_SERVICE_HOST_PORT}
+      - CONVERTER_SERVICE_HOST_PORT:${CONVERTER_SERVICE_HOST_PORT}
+      - RABBITMQ_URL:amqp://guest:guest@rabbitmq:5672
     ports:
       - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
     volumes:
@@ -14,6 +17,15 @@ services:
       - /app/node_modules
       - ./output:/app/output
       - ./output-hls:/app/output-hls
+  rabbitmq-video-service:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-video-service
+    ports:
+      - "5672:5672" # Port dla komunikacji AMQP
+      - "15672:15672" # Port dla panelu zarządzania
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 volumes:
   output:
   output-hls:
