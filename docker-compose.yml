@@ -9,7 +9,7 @@ services:
       - rabbitmq-video-service
     environment:
       - CONVERTER_SERVICE_HOST_PORT:${CONVERTER_SERVICE_HOST_PORT}
-      - RABBITMQ_URL:amqp://guest:guest@rabbitmq:5672
+      - RABBITMQ_URL:amqp://guest:guest@rabbitmq-video-service:5672
     ports:
       - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
     volumes:

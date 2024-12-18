@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const videoConverterRoute = require('./routes/videoConverter');
 const thumbnailRoutes = require('./routes/thumbnailRoutes');
 const aboutRoute = require('./routes/about');
+const queueRoute = require('./routes/queueRoute');
 
 const app = express();
 const port = process.env.CONVERTER_SERVICE_HOST_PORT || 3005;
@@ -24,6 +25,7 @@ app.use('/auth', authRoutes);
 app.use('/about', aboutRoute);
 app.use('/thumbnail', authenticateJWT, thumbnailRoutes);
 app.use('/video', authenticateJWT, videoConverterRoute);
+app.use('/queue', authenticateJWT, queueRoute);
 
 app.get('/', (req, res) => {
     res.status(200).send();
