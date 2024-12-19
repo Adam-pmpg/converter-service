@@ -4,21 +4,17 @@ const QUEUE_NAME = 'conversion_tasks';
 
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
-    const { filePath, message } = req.body;
-    let data = {
-        filePath,
-        message,
-    }
+    const { filePath, requestBody } = req.body;
     console.log({
         a21: '***********',
-        data,
+        filePath,
         body: req.body,
     })
 
     if (!filePath) {
         return res.status(400).send('filePath is required!');
     }
-    run(res, filePath, data);
+    run(res, filePath, requestBody);
 });
 
 async function run(res, filePath, data) {
