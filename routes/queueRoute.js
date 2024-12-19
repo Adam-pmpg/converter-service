@@ -1,6 +1,6 @@
 const express = require('express');
-const { sendToQueue } = require('../services/rabbitmq');
-const QUEUE_NAME = 'converter_service';
+const { sendToQueue } = require('../services/rabbit/rabbitmq');
+const QUEUE_NAME = 'conversion_tasks';
 
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
@@ -9,21 +9,26 @@ router.post('/send-to-queue/', (req, res) => {
         filePath,
         message,
     }
+    console.log({
+        a21: '***********',
+        data,
+        body: req.body,
+    })
 
     if (!filePath) {
-        return res.status(400).send('dirname is required!');
+        return res.status(400).send('filePath is required!');
     }
-    run(res, data);
+    run(res, filePath, data);
 });
 
-async function run(res, data) {
+async function run(res, filePath, data) {
     try {
         // Wyślij wiadomość do RabbitMQ
         await sendToQueue(QUEUE_NAME, { data });
-        res.status(200).send(`Message with filePath ${data} sent to queue`);
+        res.status(200).json({message:`Message with filePath ${filePath} sent to queue`});
     } catch (error) {
         console.error('Error sending message to queue:', error);
-        res.status(500).send('Failed to send message to queue');
+        res.status(500).json({message:'Failed to send message to queue'});
     }
 }
 

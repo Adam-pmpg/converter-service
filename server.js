@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const corsMiddleware = require('./middleware/corsMiddleware');
 const authenticateJWT = require('./middleware/authenticateJWT');
+const { consumeQueue } = require('./services/rabbit/ConsumerConvert');
 
 // Importowanie tras
 const authRoutes = require('./routes/authRoutes');
@@ -25,11 +26,13 @@ app.use('/auth', authRoutes);
 app.use('/about', aboutRoute);
 app.use('/thumbnail', authenticateJWT, thumbnailRoutes);
 app.use('/video', authenticateJWT, videoConverterRoute);
-app.use('/queue', authenticateJWT, queueRoute);
+app.use('/queue', queueRoute);
 
 app.get('/', (req, res) => {
     res.status(200).send();
 });
+
+consumeQueue();
 
 // Startowanie serwera
 app.listen(port, () => {

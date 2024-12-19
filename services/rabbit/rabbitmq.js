@@ -1,15 +1,17 @@
 const amqp = require('amqplib');
+const {func} = require("joi");
 
 const RABBITMQ_URL = process.env.CONVERTER_SERVICE_RABBITMQ_URL;
+const QUEUE_NAME = 'conversion_tasks';
 
 let channel;
 let connection;
 
 // Funkcja łącząca z RabbitMQ i inicjalizująca kanał
 async function connectRabbitMQ() {
-    if (channel) {
+    if (channel && connection) {
         // Jeśli połączenie i kanał już istnieją, nie wykonuj nic
-        return channel;
+        return { channel, connection };
     }
 
     try {
@@ -17,7 +19,8 @@ async function connectRabbitMQ() {
         connection = await amqp.connect(RABBITMQ_URL);
         channel = await connection.createChannel(); // Tworzymy kanał
         console.log('Connected to RabbitMQ');
-        return channel;
+        channel.assertQueue(QUEUE_NAME, { durable: true });
+        return { connection, channel, queue: QUEUE_NAME };
     } catch (error) {
         console.error('Failed to connect to RabbitMQ:', error);
         throw error;
@@ -26,9 +29,10 @@ async function connectRabbitMQ() {
 
 // Funkcja wysyłająca wiadomości do kolejki
 async function sendToQueue(queue, message) {
-    if (!channel) {
-        // Jeśli kanał nie jest zainicjalizowany, połączymy się z RabbitMQ
-        await connectRabbitMQ();
+    if (!channel || !connection) {
+        // Jeśli kanał lub połączenie nie istnieją, połączymy się z RabbitMQ
+        const { channel: newChannel } = await connectRabbitMQ();
+        channel = newChannel;
     }
 
     if (!channel) {
@@ -50,5 +54,8 @@ async function closeConnection() {
     }
     console.log('RabbitMQ connection closed');
 }
+function getQueueName() {
+    return QUEUE_NAME;
+}
 
-module.exports = { connectRabbitMQ, sendToQueue };
+module.exports = { connectRabbitMQ, sendToQueue, closeConnection, getQueueName };
