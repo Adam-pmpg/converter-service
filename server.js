@@ -10,8 +10,6 @@ const thumbnailRoutes = require('./routes/thumbnailRoutes');
 const aboutRoute = require('./routes/about');
 const queueRoute = require('./routes/queueRoute');
 
-const { connectRabbitMQ } = require('./services/rabbitmq'); // Importujemy funkcję połączenia z RabbitMQ
-
 const app = express();
 const port = process.env.CONVERTER_SERVICE_HOST_PORT || 3005;
 const host = process.env.CONVERTER_SERVICE_HOST || 'localhost';
@@ -33,25 +31,10 @@ app.get('/', (req, res) => {
     res.status(200).send();
 });
 
-// Funkcja inicjalizująca RabbitMQ i start serwera
-async function startServer() {
-    try {
-        // Połącz z RabbitMQ przed uruchomieniem serwera
-        await connectRabbitMQ();
-        console.log('RabbitMQ connected, starting server...');
-
-        // Startowanie serwera
-        app.listen(port, () => {
-            console.log(`Server running on http://${host}:${port}`);
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
-    }
-}
-
-// Startujemy serwer
-startServer();
+// Startowanie serwera
+app.listen(port, () => {
+    console.log(`Server running on http://${host}:${port}`);
+});
 
 // Obsługa nieobsłużonych błędów
 process.on('unhandledRejection', (err) => {
