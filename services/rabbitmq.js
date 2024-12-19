@@ -4,42 +4,37 @@ const RABBITMQ_URL = process.env.CONVERTER_SERVICE_RABBITMQ_URL;
 
 let channel;
 
+// Funkcja łącząca z RabbitMQ i inicjalizująca kanał
 async function connectRabbitMQ() {
+    if (channel) {
+        console.log('RabbitMQ connection already established');
+        return channel;
+    }
+
     try {
         const connection = await amqp.connect(RABBITMQ_URL);
-        channel = await connection.createChannel();
+        channel = await connection.createChannel(); // Tworzenie kanału
         console.log('Connected to RabbitMQ');
         return channel;
     } catch (error) {
         console.error('Failed to connect to RabbitMQ:', error);
-        process.exit(1);
+        throw error;
     }
 }
 
+// Funkcja wysyłająca wiadomości do kolejki
 async function sendToQueue(queue, message) {
     if (!channel) {
-        console.error('RabbitMQ channel is not initialized');
-        return;
+        await connectRabbitMQ(); // Jeśli kanał nie istnieje, połącz ponownie
     }
-    await channel.assertQueue(queue);
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+
+    if (!channel) {
+        throw new Error('RabbitMQ channel is not initialized');
+    }
+
+    await channel.assertQueue(queue); // Upewniamy się, że kolejka istnieje
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(message))); // Wysyłamy wiadomość
     console.log(`Message sent to queue "${queue}":`, message);
 }
 
-async function consumeQueue(queue, callback) {
-    if (!channel) {
-        console.error('RabbitMQ channel is not initialized');
-        return;
-    }
-    await channel.assertQueue(queue);
-    channel.consume(queue, (msg) => {
-        if (msg !== null) {
-            const messageContent = JSON.parse(msg.content.toString());
-            console.log(`Received message from queue "${queue}":`, messageContent);
-            callback(messageContent);
-            channel.ack(msg);
-        }
-    });
-}
-
-module.exports = { connectRabbitMQ, sendToQueue, consumeQueue };
+module.exports = { connectRabbitMQ, sendToQueue };
