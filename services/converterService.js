@@ -19,7 +19,7 @@ const convertToHLS = async (inputFile, outputDir, options = {}) => {
     // Wywołaj generowanie klatek
     try {
         console.log('Generowanie klatek...');
-        let setup;
+        let setup = {};
         setup.duration = duration;
         await generateThumbnails(inputFile, outputDir, setup);
         console.log('Klatki zostały wygenerowane.');
