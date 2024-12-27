@@ -30,3 +30,11 @@ curl -u guest:guest -H "content-type:application/json" \
 http://localhost:15672/api/exchanges/%2F/amq.default/publish
 ```
 
+## rabbitmqctl
+
+### Sprawdzenie czy konsument działa
+
+```
+rabbitmqctl list_queues name consumers
+```
+
