@@ -1,6 +1,5 @@
 const express = require('express');
-const { sendToQueue } = require('../services/rabbit/rabbitmq');
-const QUEUE_NAME = 'conversion_tasks';
+const { sendToQueue, QUEUE_NAME } = require('../services/rabbit/rabbitmq');
 
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
