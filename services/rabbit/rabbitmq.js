@@ -54,8 +54,5 @@ async function closeConnection() {
     }
     console.log('RabbitMQ connection closed');
 }
-function getQueueName() {
-    return QUEUE_NAME;
-}
 
-module.exports = { connectRabbitMQ, sendToQueue, closeConnection, getQueueName };
+module.exports = { connectRabbitMQ, sendToQueue, closeConnection, QUEUE_NAME };
