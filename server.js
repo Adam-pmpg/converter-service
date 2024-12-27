@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const corsMiddleware = require('./middleware/corsMiddleware');
 const authenticateJWT = require('./middleware/authenticateJWT');
-const { consumeQueue } = require('./services/rabbit/ConsumerConvert');
+const { consumeQueue, startConsumer } = require('./services/rabbit/ConsumerConvert');
 
 // Importowanie tras
 const authRoutes = require('./routes/authRoutes');
@@ -32,7 +32,8 @@ app.get('/', (req, res) => {
     res.status(200).send();
 });
 
-consumeQueue();
+// consumeQueue();
+startConsumer();
 
 // Startowanie serwera
 app.listen(port, () => {
