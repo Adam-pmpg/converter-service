@@ -4,17 +4,13 @@ const QUEUE_NAME = 'conversion_tasks';
 
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
-    const { filePath, requestBody } = req.body;
-    console.log({
-        a21: '***********',
-        filePath,
-        body: req.body,
-    })
+    const { filePath, responseFromChunkUploader, folderId, hls_time } = req.body;
 
     if (!filePath) {
         return res.status(400).send('filePath is required!');
     }
-    run(res, filePath, requestBody);
+
+    run(res, filePath, responseFromChunkUploader);
 });
 
 async function run(res, filePath, data) {
