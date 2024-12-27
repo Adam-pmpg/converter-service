@@ -14,7 +14,7 @@ rabbitmqadmin list queues
 
 rabbitmqadmin list queues name messages messages_ready messages_unacknowledged
 
-rabbitmqadmin get queue=converter_service count=10
+rabbitmqadmin get queue=convertion_tasks count=10
 
 ### Dodanie message
 
