@@ -18,11 +18,11 @@ async function connectRabbitMQ() {
         // Inicjalizuj połączenie z RabbitMQ
         connection = await amqp.connect(RABBITMQ_URL);
         channel = await connection.createChannel(); // Tworzymy kanał
-        console.log('Connected to RabbitMQ');
+        console.log('Połączony do RabbitMQ');
         channel.assertQueue(QUEUE_NAME, { durable: true });
         return { connection, channel, queue: QUEUE_NAME };
     } catch (error) {
-        console.error('Failed to connect to RabbitMQ:', error);
+        console.error('Problem z połączeniem do RabbitMQ:', error);
         throw error;
     }
 }
@@ -36,12 +36,12 @@ async function sendToQueue(queue, message) {
     }
 
     if (!channel) {
-        throw new Error('RabbitMQ channel is not initialized');
+        throw new Error('Kanał RabbitMQ, nie utworzony!');
     }
 
     await channel.assertQueue(queue); // Upewniamy się, że kolejka istnieje
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(message))); // Wysyłamy wiadomość
-    console.log(`Message sent to queue "${queue}":`, message);
+    console.log(`Wiadomość wysłana do kolejki "${queue}":`, message);
 }
 
 // Zamknięcie połączenia z RabbitMQ (jeśli konieczne)
@@ -52,7 +52,7 @@ async function closeConnection() {
     if (connection) {
         await connection.close();
     }
-    console.log('RabbitMQ connection closed');
+    console.log('RabbitMQ - połącznie zamknięte');
 }
 
 module.exports = { connectRabbitMQ, sendToQueue, closeConnection, QUEUE_NAME };
