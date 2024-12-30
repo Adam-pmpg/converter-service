@@ -11,20 +11,19 @@ async function consumeQueue() {
         channel.prefetch(1); // Odbieranie jednej wiadomości na raz
 
         channel.consume(QUEUE_NAME, async (msg) => {
+            if (!msg) {
+                console.error('Brak wiadomości: Konsument RabbitMQ nie otrzymał żadnych danych.');
+                return;
+            }
             try {
                 const { data } = JSON.parse(msg.content.toString()); // Rozpakowanie wiadomości
                 console.log('Przetwarzanie zadania:', data);
-                /** @ToDo: muszę w Rabbit wstrzykiwać potrzebne data */
-
-                // const { inputFile, outputDir, options } = data;
-                //await convertToHLS(inputFile, outputDir, options); // Rozpoczęcie konwersji wideo
 
                 let options = {};
                 options.dirname = data && data.folderId ? data.folderId : '';
-                options.mode = "run from Cunsumer";
+                options.mode = "run from Consumer";
 
                 let inputFile = data && data.outputFile ? data.outputFile : '';
-                // let outputDir = '/app/output-hls/v-bdda1d43-f307-440a-8273-b696c916f976_original'
                 let outputDir = path.join('/app/output-hls', options.dirname);
                 await convertToHLS(inputFile, outputDir, options); // Rozpoczęcie konwersji wideo
 
