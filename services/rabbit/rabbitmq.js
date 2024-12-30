@@ -36,7 +36,7 @@ async function sendToQueue(queue, message) {
     }
 
     if (!channel) {
-        throw new Error('Kanał RabbitMQ, nie utworzony!');
+        throw new Error('Kanał RabbitMQ, nieutworzony!');
     }
 
     await channel.assertQueue(queue); // Upewniamy się, że kolejka istnieje
