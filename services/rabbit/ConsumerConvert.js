@@ -1,8 +1,7 @@
-const amqp = require('amqplib');
 const path = require('path');
 
 const { connectRabbitMQ, QUEUE_NAME } = require('./rabbitmq.js');
-const { convertToHLS } = require('../converterService.js'); // Twoja funkcja konwersji wideo
+const { convertToHLS } = require('../converterService.js'); // konwersja wideo
 
 async function consumeQueue() {
     try {
