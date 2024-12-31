@@ -4,7 +4,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const router = express.Router();
-const hlsFilesDir = path.resolve(__dirname, process.env.HLS_FILES_DIR || '../hls-files');
+const hlsFilesDir = path.resolve(__dirname, '../', process.env.HLS_FILES_DIR || '../hls-files');
 
 router.delete('/', (req, res) => {
     fs.rm(hlsFilesDir, { recursive: true, force: true }, (err) => {

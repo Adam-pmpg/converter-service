@@ -6,7 +6,7 @@ const { convertToHLS } = require('../services/converterService');
 const dotenv = require('dotenv');
 dotenv.config();
 const router = express.Router();
-const hlsFilesDir = path.resolve(__dirname, process.env.HLS_FILES_DIR || '../hls-files');
+const hlsFilesDir = path.resolve(__dirname, '../', process.env.HLS_FILES_DIR || '../hls-files');
 
 router.post('/convert/:dirname', (req, res) => {
     const { dirname } = req.params; // Pobieranie nazwy folderu z URL

@@ -1,7 +1,7 @@
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
-const hlsFilesDir = path.resolve(__dirname, process.env.HLS_FILES_DIR || '../hls-files');
+const hlsFilesDir = path.resolve(__dirname, '../', process.env.HLS_FILES_DIR || '../hls-files');
 const { connectRabbitMQ, QUEUE_NAME } = require('./rabbitmq.js');
 const { convertToHLS } = require('../converterService.js'); // konwersja wideo
 
@@ -26,7 +26,15 @@ async function consumeQueue() {
                 options.mode = "run from Consumer";
 
                 let inputFile = data && data.outputFile ? data.outputFile : '';
-                let outputDir = path.join(hlsFilesDir, options.dirname);
+                let outputDir = path.join('app', hlsFilesDir, options.dirname);
+                console.log({
+                    a31: '*************',
+                    hlsFilesDir,
+                    inputFile,
+                    outputDir,
+                    options,
+                })
+                // return true;
                 await convertToHLS(inputFile, outputDir, options); // Rozpoczęcie konwersji wideo
 
                 channel.ack(msg); // Potwierdzenie przetworzenia wiadomości
