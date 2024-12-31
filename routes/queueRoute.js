@@ -4,7 +4,7 @@ const { sendToQueue, QUEUE_NAME } = require('../services/rabbit/rabbitmq');
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
     const { responseFromChunkUploader } = req.body;
-    const { outputFile } = responseFromChunkUploader;
+    const  outputFile  = responseFromChunkUploader && responseFromChunkUploader.outputFile ? responseFromChunkUploader.outputFile : '';
     if (!outputFile ) {
         return res.status(400).send('Brak ścieżki do scalonego pliku oryginału!');
     }

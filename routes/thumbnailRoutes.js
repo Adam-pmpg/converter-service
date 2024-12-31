@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-
+const dotenv = require('dotenv');
+dotenv.config();
+const hlsFilesDir = path.resolve(__dirname, process.env.HLS_FILES_DIR || '../hls-files');
 const { generateThumbnails } = require('../services/thumbnailService');
 const { getVideoDuration } = require('../services/ffmpegUtils');
 
@@ -16,7 +18,7 @@ router.post('/generate-thumbnails/:dirname', async (req, res) => {
             size
         };
         const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`);
-        const outputDir = path.join(__dirname, '../output-hls', dirname );
+        const outputDir = path.join(hlsFilesDir, dirname );
 
         if (!fs.existsSync(inputFile)) {
             return res.status(404).json({ error: 'Brak folderu wejściowego #102' });
