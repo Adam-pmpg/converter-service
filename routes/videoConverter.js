@@ -3,8 +3,10 @@ const Joi = require('joi');
 const path = require('path');
 const fs = require('fs');
 const { convertToHLS } = require('../services/converterService');
-
+const dotenv = require('dotenv');
+dotenv.config();
 const router = express.Router();
+const hlsFilesDir = path.resolve(__dirname, process.env.HLS_FILES_DIR || '../hls-files');
 
 router.post('/convert/:dirname', (req, res) => {
     const { dirname } = req.params; // Pobieranie nazwy folderu z URL
@@ -26,7 +28,7 @@ router.post('/convert/:dirname', (req, res) => {
     };
 
     const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`); // Ścieżka do pliku MP4
-    const outputDir = path.join(__dirname, '../output-hls', dirname); // Ścieżka do katalogu wynikowego HLS
+    const outputDir = path.join(hlsFilesDir, dirname); // Ścieżka do katalogu wynikowego sekwencji plików HLS
 
     // Sprawdzenie, czy plik wejściowy istnieje
     if (!fs.existsSync(inputFile)) {
