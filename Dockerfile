@@ -54,6 +54,8 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # przeniosę to, jako mapowanie do docker-compose
 # EXPOSE 3000
 
+WORKDIR /app
+
 # Uruchamiamy aplikację za pomocą nodemon
 # CMD ["nodemon", "server.js"]
 CMD ["npm", "run", "dev"]
