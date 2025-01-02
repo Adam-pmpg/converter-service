@@ -4,12 +4,8 @@ const { sendToQueue, QUEUE_NAME } = require('../services/rabbit/rabbitmq');
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
     const { responseFromChunkUploader } = req.body;
-    console.log({
-        a12: "***********",
-        responseFromChunkUploader,
-    })
-    const  outputFile  = responseFromChunkUploader && responseFromChunkUploader.outputFile ? responseFromChunkUploader.outputFile : '';
-    if (!outputFile ) {
+    const outputFile  = responseFromChunkUploader && responseFromChunkUploader.outputFile ? responseFromChunkUploader.outputFile : '';
+    if (!outputFile) {
         return res.status(400).send('Brak ścieżki do scalonego pliku oryginału!');
     }
 
@@ -21,7 +17,8 @@ async function run(res, data) {
         // Wyślij wiadomość do RabbitMQ
         await sendToQueue(QUEUE_NAME, { data });
         let outputFile = data && data.outputFile ? data.outputFile : '';
-        res.status(200).json({message:`Wiadomość wysłana na kolejkę\noryginalne wideo: ${outputFile}`});
+        let folderId = data && data.folderId ? data.folderId : '';
+        res.status(200).json({message:`Wiadomość wysłana na kolejkę\noryginalne wideo: ${folderId}`});
     } catch (error) {
         console.error('Błąd wysyłania wiadomości do kolejki:', error);
         res.status(500).json({message:'Błąd wysyłania wiadomości do kolejki!'});
