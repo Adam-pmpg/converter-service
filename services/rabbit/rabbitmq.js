@@ -1,8 +1,8 @@
 const amqp = require('amqplib');
 const {func} = require("joi");
 
-const RABBITMQ_URL = process.env.CONVERTER_SERVICE_RABBITMQ_URL;
-const CONVERSION_QUEUE = 'conversion_tasks';
+const CONVERSION_RABBITMQ_URL = process.env.CONVERTER_SERVICE_RABBITMQ_URL;
+const CONVERSION_QUEUE = process.env.CONVERTER_SERVICE_QUEUE;
 
 let conversionChannel;
 let connection;
@@ -16,7 +16,7 @@ async function connectRabbitMQ() {
 
     try {
         // Inicjalizuj połączenie z RabbitMQ
-        connection = await amqp.connect(RABBITMQ_URL);
+        connection = await amqp.connect(CONVERSION_RABBITMQ_URL);
         conversionChannel = await connection.createChannel(); // Tworzymy kanał
         console.log('Połączono do RabbitMQ');
         conversionChannel.assertQueue(CONVERSION_QUEUE, { durable: true });
