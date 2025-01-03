@@ -18,7 +18,7 @@ async function run(res, data) {
         await sendToQueue(CONVERSION_QUEUE, { data });
         let outputFile = data && data.outputFile ? data.outputFile : '';
         let folderId = data && data.folderId ? data.folderId : '';
-        res.status(200).json({message:`Wiadomość wysłana na kolejkę\noryginalne wideo: ${folderId}`});
+        res.status(200).json({message:`Wiadomość wysłana na kolejkę do konwersji\noryginalne wideo: ${folderId}`});
     } catch (error) {
         console.error('Błąd wysyłania wiadomości do kolejki:', error);
         res.status(500).json({message:'Błąd wysyłania wiadomości do kolejki!'});
