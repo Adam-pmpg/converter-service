@@ -1,5 +1,5 @@
 const express = require('express');
-const { sendToQueue, QUEUE_NAME } = require('../services/rabbit/rabbitmq');
+const { sendToQueue, CONVERSION_QUEUE } = require('../services/rabbit/rabbitmq');
 
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
@@ -15,7 +15,7 @@ router.post('/send-to-queue/', (req, res) => {
 async function run(res, data) {
     try {
         // Wyślij wiadomość do RabbitMQ
-        await sendToQueue(QUEUE_NAME, { data });
+        await sendToQueue(CONVERSION_QUEUE, { data });
         let outputFile = data && data.outputFile ? data.outputFile : '';
         let folderId = data && data.folderId ? data.folderId : '';
         res.status(200).json({message:`Wiadomość wysłana na kolejkę\noryginalne wideo: ${folderId}`});

@@ -2,17 +2,17 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const hlsFilesDir = process.env.HLS_FILES_DIR || '../hls-files';
-const { connectRabbitMQ, QUEUE_NAME } = require('./rabbitmq.js');
+const { connectRabbitMQ, CONVERSION_QUEUE } = require('./rabbitmq.js');
 const { convertToHLS } = require('../converterService.js'); // konwersja wideo
 
 async function consumeQueue() {
     try {
-        const { channel } = await connectRabbitMQ();
+        const { conversionChannel } = await connectRabbitMQ();
 
-        console.log('Konsument nasłuchuje na kolejce:', QUEUE_NAME );
-        channel.prefetch(1); // Odbieranie jednej wiadomości na raz
+        console.log('Konsument nasłuchuje na kolejce:', CONVERSION_QUEUE );
+        conversionChannel.prefetch(1); // Odbieranie jednej wiadomości na raz
 
-        channel.consume(QUEUE_NAME, async (msg) => {
+        conversionChannel.consume(CONVERSION_QUEUE, async (msg) => {
             if (!msg) {
                 console.error('Brak wiadomości: Konsument RabbitMQ nie otrzymał żadnych danych.');
                 return;
@@ -31,10 +31,10 @@ async function consumeQueue() {
                 // return true;
                 await convertToHLS(inputFile, outputDir, options); // Rozpoczęcie konwersji wideo
 
-                channel.ack(msg); // Potwierdzenie przetworzenia wiadomości
+                conversionChannel.ack(msg); // Potwierdzenie przetworzenia wiadomości
             } catch (error) {
                 console.error('Błąd podczas konwersji:', error);
-                channel.nack(msg, false, true); // Wiadomość wraca do kolejki w przypadku błędu
+                conversionChannel.nack(msg, false, true); // Wiadomość wraca do kolejki w przypadku błędu
             }
         });
     } catch (error) {

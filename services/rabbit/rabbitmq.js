@@ -2,25 +2,25 @@ const amqp = require('amqplib');
 const {func} = require("joi");
 
 const RABBITMQ_URL = process.env.CONVERTER_SERVICE_RABBITMQ_URL;
-const QUEUE_NAME = 'conversion_tasks';
+const CONVERSION_QUEUE = 'conversion_tasks';
 
-let channel;
+let conversionChannel;
 let connection;
 
 // Funkcja łącząca z RabbitMQ i inicjalizująca kanał
 async function connectRabbitMQ() {
-    if (channel && connection) {
+    if (conversionChannel && connection) {
         // Jeśli połączenie i kanał już istnieją, nie wykonuj nic
-        return { channel, connection };
+        return { conversionChannel, connection };
     }
 
     try {
         // Inicjalizuj połączenie z RabbitMQ
         connection = await amqp.connect(RABBITMQ_URL);
-        channel = await connection.createChannel(); // Tworzymy kanał
+        conversionChannel = await connection.createChannel(); // Tworzymy kanał
         console.log('Połączono do RabbitMQ');
-        channel.assertQueue(QUEUE_NAME, { durable: true });
-        return { connection, channel, queue: QUEUE_NAME };
+        conversionChannel.assertQueue(CONVERSION_QUEUE, { durable: true });
+        return { connection, conversionChannel, queue: CONVERSION_QUEUE };
     } catch (error) {
         console.error('Problem z połączeniem do RabbitMQ:', error);
         throw error;
@@ -29,25 +29,25 @@ async function connectRabbitMQ() {
 
 // Funkcja wysyłająca wiadomości do kolejki
 async function sendToQueue(queue, message) {
-    if (!channel || !connection) {
+    if (!conversionChannel || !connection) {
         // Jeśli kanał lub połączenie nie istnieją, połączymy się z RabbitMQ
-        const { channel: newChannel } = await connectRabbitMQ();
-        channel = newChannel;
+        const { conversionChannel: newChannel } = await connectRabbitMQ();
+        conversionChannel = newChannel;
     }
 
-    if (!channel) {
+    if (!conversionChannel) {
         throw new Error('Kanał RabbitMQ, nieutworzony!');
     }
 
-    await channel.assertQueue(queue); // Upewniamy się, że kolejka istnieje
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(message))); // Wysyłamy wiadomość
+    await conversionChannel.assertQueue(queue); // Upewniamy się, że kolejka istnieje
+    conversionChannel.sendToQueue(queue, Buffer.from(JSON.stringify(message))); // Wysyłamy wiadomość
     console.log(`Wiadomość wysłana do kolejki "${queue}":`, message);
 }
 
 // Zamknięcie połączenia z RabbitMQ (jeśli konieczne)
 async function closeConnection() {
-    if (channel) {
-        await channel.close();
+    if (conversionChannel) {
+        await conversionChannel.close();
     }
     if (connection) {
         await connection.close();
@@ -55,4 +55,4 @@ async function closeConnection() {
     console.log('RabbitMQ - połącznie zamknięte');
 }
 
-module.exports = { connectRabbitMQ, sendToQueue, closeConnection, QUEUE_NAME };
+module.exports = { connectRabbitMQ, sendToQueue, closeConnection, CONVERSION_QUEUE };
