@@ -8,18 +8,18 @@ const { getVideoDuration } = require('./ffmpegUtils');
 const convertToHLS = async (inputFile, outputDir, options = {}) => {
     const { dirname } = options;
     if (!fs.existsSync(inputFile)) {
-        return reject(new Error('Brak pliku wejściowego'));
+        throw new Error('Brak pliku wejściowego');
     }
     let duration;
     try {
         duration = await getVideoDuration(inputFile);
     } catch (err) {
-        return reject(new Error('Nie udało się uzyskać czasu trwania wideo: ' + err.message));
+        throw new Error('Nie udało się uzyskać czasu trwania wideo: ' + err.message);
     }
     // Wywołaj generowanie klatek
     try {
         console.log('Generowanie klatek...');
-        let setup;
+        let setup = {};
         setup.duration = duration;
         await generateThumbnails(inputFile, outputDir, setup);
         console.log('Klatki zostały wygenerowane.');

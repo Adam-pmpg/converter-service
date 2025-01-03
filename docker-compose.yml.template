@@ -9,14 +9,14 @@ services:
       - rabbitmq-video-service
     environment:
       - CONVERTER_SERVICE_HOST_PORT:${CONVERTER_SERVICE_HOST_PORT}
-      - RABBITMQ_URL:amqp://guest:guest@rabbitmq:5672
+      - RABBITMQ_URL:amqp://guest:guest@rabbitmq-video-service:5672
     ports:
       - "${CONVERTER_SERVICE_HOST_PORT}:${CONVERTER_SERVICE_CONTAINER_PORT}"
     volumes:
       - .:/app
       - /app/node_modules
       - ./output:/app/output
-      - ./output-hls:/app/output-hls
+      - ./hls-files:/app/hls-files
   rabbitmq-video-service:
     image: rabbitmq:3-management
     container_name: rabbitmq-video-service
@@ -28,4 +28,4 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
 volumes:
   output:
-  output-hls:
+  hls-files:

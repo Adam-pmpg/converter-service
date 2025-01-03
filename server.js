@@ -2,12 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const corsMiddleware = require('./middleware/corsMiddleware');
 const authenticateJWT = require('./middleware/authenticateJWT');
+const { consumeQueue, startConsumer } = require('./services/rabbit/ConsumerConvert');
 
 // Importowanie tras
 const authRoutes = require('./routes/authRoutes');
 const videoConverterRoute = require('./routes/videoConverter');
 const thumbnailRoutes = require('./routes/thumbnailRoutes');
 const aboutRoute = require('./routes/about');
+const queueRoute = require('./routes/queueRoute');
+const clearHls = require('./routes/clearHls');
 
 const app = express();
 const port = process.env.CONVERTER_SERVICE_HOST_PORT || 3005;
@@ -24,18 +27,23 @@ app.use('/auth', authRoutes);
 app.use('/about', aboutRoute);
 app.use('/thumbnail', authenticateJWT, thumbnailRoutes);
 app.use('/video', authenticateJWT, videoConverterRoute);
+app.use('/queue', authenticateJWT, queueRoute);
+app.use('/video/clear-hls', authenticateJWT, clearHls);
 
 app.get('/', (req, res) => {
     res.status(200).send();
+});
+
+// consumeQueue();
+startConsumer();
+
+// Startowanie serwera
+app.listen(port, () => {
+    console.log(`Server running on http://${host}:${port}`);
 });
 
 // Obsługa nieobsłużonych błędów
 process.on('unhandledRejection', (err) => {
     console.error('Unhandled Rejection:', err);
     process.exit(1);
-});
-
-// Startowanie serwera
-app.listen(port, () => {
-    console.log(`Server running on http://${host}:${port}`);
 });
