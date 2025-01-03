@@ -15,7 +15,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-      - ./output:/app/output
+      - ./merged-files:/app/merged-files
       - ./hls-files:/app/hls-files
   rabbitmq-video-service:
     image: rabbitmq:3-management
@@ -27,5 +27,5 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
 volumes:
-  output:
+  merged-files:
   hls-files:

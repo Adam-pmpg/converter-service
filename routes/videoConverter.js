@@ -27,8 +27,8 @@ router.post('/convert/:dirname', (req, res) => {
         resolutions: resolutions ? resolutions : [],// Brak limitu segmentów w liście, domyślnie 0
     };
 
-    const inputFile = path.join(__dirname, '../output', dirname, `${dirname}.mp4`); // Ścieżka do pliku MP4
-    const outputDir = path.join(__dirname, hlsFilesDir, dirname); // Ścieżka do katalogu wynikowego HLS
+    const inputFile = path.join(__dirname, '../merged-files', dirname, `${dirname}.mp4`); // Ścieżka do pliku MP4
+    const outputHlsTempDir = path.join(__dirname, hlsFilesDir, dirname); // Ścieżka do katalogu wynikowego HLS
 
     // Sprawdzenie, czy plik wejściowy istnieje
     if (!fs.existsSync(inputFile)) {
@@ -36,16 +36,16 @@ router.post('/convert/:dirname', (req, res) => {
     }
 
     // Sprawdzenie, czy katalog wyjściowy istnieje, jeśli nie, to go tworzymy
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+    if (!fs.existsSync(outputHlsTempDir)) {
+        fs.mkdirSync(outputHlsTempDir, { recursive: true });
     }
 
     // Wywołanie funkcji konwertującej do HLS
-    convertToHLS(inputFile, outputDir, options)
+    convertToHLS(inputFile, outputHlsTempDir, options)
         .then(() => {
             res.status(200).json({
                 message: 'Conversion successful',
-                outputDir: outputDir, // Zwracamy ścieżkę, gdzie zapisano pliki HLS
+                outputHlsDir: outputHlsTempDir, // Zwracamy ścieżkę, gdzie zapisano pliki HLS
             });
         })
         .catch((error) => {

@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const router = express.Router();
 const hlsFilesDir = process.env.HLS_FILES_DIR || '../hls-files';
-const outputHlsDir = path.join(__dirname, hlsFilesDir);
+const mergedFilesHlsDir = path.join(__dirname, hlsFilesDir);
 
 const clearFolder = (dir) => {
     return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ const clearFolder = (dir) => {
 };
 
 router.delete('/', (req, res) => {
-    Promise.all([clearFolder(outputHlsDir)])
+    Promise.all([clearFolder(mergedFilesHlsDir)])
         .then(results => {
             res.status(200).send({
                 message: 'Foldery zostały wyczyszczone',

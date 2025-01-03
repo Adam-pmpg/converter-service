@@ -25,7 +25,7 @@ async function consumeQueue() {
                 options.dirname = data && data.folderId ? data.folderId : '';
                 options.mode = "run from Consumer";
 
-                let inputFile = data && data.outputFile ? data.outputFile : '';
+                let inputFile = data && data.mergedFile ? data.mergedFile : '';
                 let outputDir = path.resolve(__dirname, '../', hlsFilesDir, options.dirname);
 
                 // return true;

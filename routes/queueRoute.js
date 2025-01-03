@@ -4,8 +4,8 @@ const { sendToQueue, CONVERSION_QUEUE } = require('../services/rabbit/rabbitmq')
 const router = express.Router();
 router.post('/send-to-queue/', (req, res) => {
     const { responseFromChunkUploader } = req.body;
-    const outputFile  = responseFromChunkUploader && responseFromChunkUploader.outputFile ? responseFromChunkUploader.outputFile : '';
-    if (!outputFile) {
+    const mergedFile  = responseFromChunkUploader && responseFromChunkUploader.mergedFile ? responseFromChunkUploader.mergedFile : '';
+    if (!mergedFile) {
         return res.status(400).send('Brak ścieżki do scalonego pliku oryginału!');
     }
 
@@ -16,7 +16,6 @@ async function run(res, data) {
     try {
         // Wyślij wiadomość do RabbitMQ
         await sendToQueue(CONVERSION_QUEUE, { data });
-        let outputFile = data && data.outputFile ? data.outputFile : '';
         let folderId = data && data.folderId ? data.folderId : '';
         res.status(200).json({message:`Wiadomość wysłana na kolejkę do konwersji\noryginalne wideo: ${folderId}`});
     } catch (error) {
