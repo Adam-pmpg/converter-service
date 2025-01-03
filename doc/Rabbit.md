@@ -38,3 +38,11 @@ http://localhost:15672/api/exchanges/%2F/amq.default/publish
 rabbitmqctl list_queues name consumers
 ```
 
+## Tworzenie nowego vhost'a
+
+rabbitmqctl add_vhost media-processing
+
+### Przypisz uprawnienia użytkownikowi
+
+rabbitmqctl set_permissions -p media-processing converter_user ".*" ".*" ".*"
+
