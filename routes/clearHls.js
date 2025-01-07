@@ -73,4 +73,41 @@ router.delete('/', (req, res) => {
         });
 });
 
+// Endpoint do usuwania konkretnego folderu
+router.delete('/:dirName', (req, res) => {
+    const { dirName } = req.params;
+    const specificDir = path.join(mergedFilesHlsDir, dirName);
+    fs.access(specificDir, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).send({
+                message: `Folder ${dirName} nie istnieje`,
+                error: err
+            });
+        }
+
+        clearFolder(specificDir)
+            .then(results => {
+                fs.rmdir(specificDir, (err) => {
+                    if (err) {
+                        return res.status(500).send({
+                            message: `Błąd podczas usuwania pojedynczego folderu ${dirName}`,
+                            error: err
+                        });
+                    }
+
+                    res.status(200).send({
+                        message: `Pojedynczy folder ${dirName} został usunięty`,
+                        details: results
+                    });
+                });
+            })
+            .catch(error => {
+                res.status(500).send({
+                    message: `Wystąpił błąd podczas usuwania zawartości pojedynczego folderu ${dirName}`,
+                    error: error
+                });
+            });
+    });
+});
+
 module.exports = router;
