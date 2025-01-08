@@ -10,6 +10,8 @@ http://localhost:15672/
 
 ## Komendy
 
+### Listowanie wiadomości w kolejce
+
 rabbitmqadmin list queues
 
 rabbitmqadmin list queues name messages messages_ready messages_unacknowledged

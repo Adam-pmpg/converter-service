@@ -1,7 +1,15 @@
 const express = require('express');
 const { sendToQueue, CONVERSION_QUEUE } = require('../services/rabbit/rabbitmq');
+const {startConsumer} = require("../services/rabbit/ConsumerConvert");
 
 const router = express.Router();
+
+router.post('/start', (req, res) => {
+    startConsumer();
+
+    return res.status(200).json({message:`Manually start queue`});
+});
+
 router.post('/send-to-queue/', (req, res) => {
     const { responseFromChunkUploader } = req.body;
     const mergedFile  = responseFromChunkUploader && responseFromChunkUploader.mergedFile ? responseFromChunkUploader.mergedFile : '';
